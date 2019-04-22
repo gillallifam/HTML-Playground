@@ -33,6 +33,7 @@
       }
 
       const instance = new Singleton();
+      const instance2 = new Singleton();
       Object.freeze(instance);
       var numItems = 1000;
       for (let i = 1; i <= numItems; i++) {
@@ -41,6 +42,7 @@
       }
       console.log(instance.findItem("f1"));
       console.log(instance);
+      console.log(instance2);
 
       function makeid() {
         let text = "";
