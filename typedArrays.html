@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="jsonpath.js"></script>
+    <script src="jsonpointer.js"></script>
+</head>
+
+<body>
+
+    <script>
+        normal();
+        typed();
+        // Float32Array
+
+        function typed(params) {
+            var ary32 = new Int16Array(1000000);
+
+            var start = +new Date();
+            for (var i = 0, l = ary32.length; i < l; i++) {
+                ary32[i] = i;
+            }
+            console.log(ary32);
+            console.log("Write: " + (+new Date() - start));
+            //alert("Write: " + (+new Date() - start));
+            // 1455ms
+
+            var val = 0;
+            var start = +new Date();
+            for (var i = 0, l = ary32.length; i < l; i++) {
+                val = ary32[i];
+            }
+            console.log("Read: " + (+new Date() - start));
+            //alert("Read: " + (+new Date() - start));
+            // 1109ms
+
+            var start = +new Date();
+            var ary32Copy = new Float32Array(ary32.length);
+            for (var i = 0, l = ary32.length; i < l; i++) {
+                ary32Copy[i] = ary32[i];
+            }
+            console.log("Loop Copy: " + (+new Date() - start));
+            //alert("Loop Copy: " + (+new Date() - start));
+            // 1969ms
+
+            var start = +new Date();
+            var ary32SliceCopy = new Float32Array(ary32.slice(0, ary32.length));
+            console.log("Slice Copy: " + (+new Date() - start));
+            //alert("Slice Copy: " + (+new Date() - start));
+            // 503ms
+        }
+
+        // Regular JavaScript Array
+        function normal(params) {
+            var ary = new Array(1000000);
+
+            var start = +new Date();
+            for (var i = 0, l = ary.length; i < l; i++) {
+                ary[i] = i;
+            }
+            console.log(ary);
+            console.log("Time: " + (+new Date() - start));
+            //alert("Write: " + (+new Date() - start));
+            // 8947
+
+            var val = 0;
+            var start = +new Date();
+            for (var i = 0, l = ary.length; i < l; i++) {
+                val = ary[i];
+            }
+            console.log("Time: " + (+new Date() - start));
+            //alert("Read: " + (+new Date() - start));
+            // 1948
+
+            var start = +new Date();
+            var aryCopy = new Array(ary.length);
+            for (var i = 0, l = ary.length; i < l; i++) {
+                aryCopy[i] = ary[i];
+            }
+            console.log("Time: " + (+new Date() - start));
+            //alert("Loop Copy: " + (+new Date() - start));
+            // SCRIPT STOPS WITHOUT ERROR MESSAGE!!
+
+            var start = +new Date();
+            var arySliceCopy = new Array(ary.slice(0, ary.length));
+            console.log("Time: " + (+new Date() - start));
+            //alert("Slice Copy: " + (+new Date() - start));
+            //1125 
+        }
+    </script>
+
+</body>
+
+</html>

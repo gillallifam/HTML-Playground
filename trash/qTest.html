@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <style></style>
+  </head>
+
+  <body>
+    <h3>content</h3>
+    <p>
+      gsnode, markdown, fetch browser, spread op, chunkener, obj destruct,
+      array.filter
+    </p>
+    <a href="gsnode:f#theapp/install#package1-package2/start#npm-start"
+      >Get Started</a
+    >
+    <a
+      href="gsnode:1&md tst#2&cd tst#3&npm install package1 package2#4&npm start#link&github.com/xcxcx"
+      >Get Started</a
+    >
+    <a href="gsnode:md tst#cd tst#npm install package1 package2#npm start"
+      >Get Started</a
+    >
+    <div id="content"></div>
+
+    <script>
+      document.getElementById("content").innerHTML = marked(
+        "# Marked in the browser\n\nRendered by **marked**."
+      );
+      fetch("https://jsonplaceholder.typicode.com/users")
+        .then(res => res.json())
+        .then(res => res.map(user => user.username))
+        .then(userNames => console.log(userNames));
+
+      var objx = {
+        a: 1,
+        b: 2
+      };
+      console.log({
+        ...objx
+      });
+
+      chunkener = (arr, len) => {
+        let chunked = [];
+        for (let c = 0; c < arr.length; c += len) {
+          chunked.push(arr.slice(c, c + len));
+        }
+        return chunked;
+      };
+
+      var arrTst = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      console.log(chunkener(arrTst, 1));
+      console.log(chunkener(arrTst, 2));
+      console.log(chunkener(arrTst, 3));
+      console.log(chunkener(arrTst, 4));
+      console.log(chunkener(arrTst, 5));
+      console.log(chunkener(arrTst, 6));
+
+      console.log("----------------------------------------");
+      var obj = {
+        aa: "1",
+        bb: "2",
+        cc: "3"
+      };
+
+      const { aa = "def" } = obj;
+      console.log("data", aa);
+
+      var jobs = [
+        {
+          id: 1,
+          type: "a"
+        },
+        {
+          id: 2,
+          type: "b"
+        },
+        {
+          id: 1,
+          type: "c"
+        },
+        {
+          id: 1,
+          type: "a"
+        }
+      ];
+
+      var typeJobs = jobs.filter(j => j.type == "a");
+      console.log(typeJobs);
+    </script>
+  </body>
+</html>

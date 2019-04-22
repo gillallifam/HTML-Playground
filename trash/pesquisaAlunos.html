@@ -1,0 +1,459 @@
+<head>
+    <style>
+        .pesquisaAlunosContainer input[type=text] {
+            width: 50%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 id='txtPesquisaAlunosTitle'></h2>
+    <div class="pesquisaAlunosContainer">
+        <div class="row" style="display:flex;margin:2px">
+            <input type="text" class="w3-half" list="alu_ac_mat" onkeyup="pesqAlunoOnEnterKey(event);" id="pesqAlunoInputMatricula"
+                name="pesqAlunoInputMatricula" placeholder="Matrícula">
+            <datalist id="alu_ac_mat"></datalist>
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputMatricula" style="margin-left:10px"
+                onclick="pesqAlunosPorMatricula(this);">
+                <i class="fa fa-search"> Por matrícula</i>
+            </button>
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputMatriculaP" style="margin-left:10px;"
+                onclick="pesqAlunosPorMatricula(this);">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+        <div class="row" style="display:flex;margin:2px">
+            <input type="text" class="w3-half" onkeyup="pesqAlunoOnEnterKey(event);" id="pesqAlunoInputCPFResp" name="pesqAlunoInputCPFResp"
+                placeholder="CPF do Responsável">
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputCPFResp" style="margin-left:10px"
+                onclick="pesqAlunosPorCPFResp(this);">
+                <i class="fa fa-search"> Por CPF do responsável</i>
+            </button>
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputCPFRespP" style="margin-left:10px"
+                onclick="pesqAlunosPorCPFResp(this);">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+        <div class="row" style="display:flex;margin:2px">
+            <input type="text" class="w3-half" list="nomesComp" onkeyup="pesqAlunoOnEnterKey(event);" id="pesqAlunoInputNome"
+                name="pesqAlunoInputNome" placeholder="Nome completo">
+            <datalist id="nomesComp"></datalist>
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputNome" style="margin-left:10px"
+                onclick="pesqAlunosPorNome(this);">
+                <i class="fa fa-search"> Por nome</i>
+            </button>
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputNomeP" style="margin-left:10px"
+                onclick="pesqAlunosPorNome(this);">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+        <div class="row" style="display:flex;margin:2px">
+            <input type="text" class="w3-half" list="nomesMaeComp" onkeyup="pesqAlunoOnEnterKey(event);" id="pesqAlunoInputNomeMae"
+                name="pesqAlunoInputNomeMae" placeholder="Nome completo da mãe">
+            <datalist id="nomesMaeComp"></datalist>
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputNomeMae" style="margin-left:10px"
+                onclick="pesqAlunosPorNomeMae(this);">
+                <i class="fa fa-search"> Por nome da mãe</i>
+            </button>
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" id="btPesqAlunoInputNomeMaeP" style="margin-left:10px"
+                onclick="pesqAlunosPorNomeMae(this);">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+        <div class="row" style="display:flex;margin:2px">
+            <h5 style="width:10%">Filtro: </h5>
+            <input type="text" style="width:20%" onkeyup="tableFilter(1);" id="tableAluFilter1" name="tableAluFilter1"
+                placeholder="Nome" />
+            <input type="text" style="width:20%" onkeyup="tableFilter(3);" id="tableAluFilter3" name="tableAluFilter3"
+                placeholder="Situação" />
+            <input type="text" style="width:20%" onkeyup="tableFilter(5);" id="tableAluFilter5" name="tableAluFilter5"
+                placeholder="Classe" />
+            <input type="text" style="width:20%" onkeyup="tableFilter(7);" id="tableAluFilter7" name="tableAluFilter7"
+                placeholder="Turno" />
+            <input type="text" style="width:20%" onkeyup="tableFilter(10);" id="tableAluFilter10" name="tableAluFilter10"
+                placeholder="Cor" />
+        </div>
+
+        <button class="w3-btn w3-light-blue w3-round-xxlarge" style="display:inline" onclick="pesqAlunosTodos(this);">
+            <i class="fa fa-search"> Todos</i>
+        </button>
+
+        <div class="chooseColumnsAluno" style="display:inline">
+            <button class="w3-btn w3-light-blue w3-round-xxlarge" style="display:inline" onclick="columnsChooserAlunoToggle();">
+                <i class="fa fa-bars fa-rotate-90"></i>
+            </button>
+            <ul id="checkbox-gridAlunos" style="display:none">
+            </ul>
+        </div>
+        <table id="tablePesqAlunos"></table>
+        <i class="fa fa-spin fa-8x fa-refresh" id="loading_icon_pesquisaAlunos" style="display:none"></i>
+
+    </div>
+
+    <script>
+        if (escolaINEP == "null") {
+            setupEscola(userSchools[0]);
+        }
+        var btPressed = null;
+        var pesqAlunoInputNome = document.getElementById('pesqAlunoInputNome');
+        var pesqAlunoInputNomeMae = document.getElementById('pesqAlunoInputNomeMae');
+        var pesqAlunoInputMatricula = document.getElementById('pesqAlunoInputMatricula');
+        var pesqAlunoInputCPFResp = document.getElementById('pesqAlunoInputCPFResp');
+        document.getElementById('txtPesquisaAlunosTitle').innerHTML = 'Pesquisar alunos da E. M. ' +
+            escolaNome;
+        var options = {};
+
+        var acNome = document.getElementById("nomesComp");
+        var acNomeM = document.getElementById("nomesMaeComp");
+        var acMat = document.getElementById("alu_ac_mat");
+        var selectedItems = [];
+        var sortingDir = "";
+
+        function removeOptions(selectbox) {
+            var i;
+            for (i = selectbox.options.length - 1; i >= 0; i--) {
+                selectbox.remove(i);
+            }
+        }
+
+        pesquisaAlunosFocus(true);
+
+        function defAluHeaders(n) {
+            switch (n) {
+                case 1:
+                case 3:
+                case 6:
+                case 7:
+                    return true;
+            }
+            return false;
+        }
+
+        tableAluHeaders = localStorage.getItem('tableAluHeaders') || ['Nsigeb', 'Nome completo', 'Matrícula',
+            'Situação', 'Série', 'Classe', 'Idade', 'Turno', 'Sexo', "PNE", "Cor", 'Indígena', 'Nome mãe'
+        ];
+        var tAluCSel = new Array(tableAluHeaders.length);
+        var grid = document.getElementById('checkbox-gridAlunos');
+        for (i = 1; i < tableAluHeaders.length; i++) {
+            tAluCSel[i] = JSON.parse(localStorage.getItem('cAlu' + tableAluHeaders[i])) || defAluHeaders(i); //le do localstorage
+            //console.log('cAlu' + tableAluHeaders[i]);
+            //console.log(tAluCSel[i]);
+            try {
+                tmpli = document.createElement('li');
+                tmplabel = document.createElement('label');
+                tmplabel.innerHTML = ' ' + tableAluHeaders[i];
+                tmplabel.htmlfor = 'cAlu' + tableAluHeaders[i];
+                tmplabel.style.padding = "4px";
+                tmpchk = document.createElement('input');
+                tmpchk.type = 'checkbox';
+                tmpchk.id = 'cAlu' + tableAluHeaders[i].replace(" ", "-");
+                tmpchk.name = 'cAlu' + tableAluHeaders[i].replace(" ", "-");
+                tmpchk.value = tableAluHeaders[i];
+                tmpchk.addEventListener('click', function () {
+                    toggleColAluno(this);
+                });
+                tmplabel.prepend(tmpchk);
+                tmpli.appendChild(tmplabel);
+                grid.appendChild(tmpli);
+            } catch (error) {
+                alert(error)
+            }
+
+            if (tAluCSel[i] == true) { //se true marca a checkbox
+                $('#cAlu' + tableAluHeaders[i].replace(" ", "-")).prop("checked", true);
+            }
+        }
+
+        function columnsChooserAlunoToggle() { //mostra ou esconde as opçoes de colunas
+            $('#checkbox-gridAlunos').fadeToggle();
+        }
+
+        function toggleColAluno(elem) { //esconde ou mostra coluna
+            localStorage.setItem(elem.name, elem.checked);
+            if (elem.checked == true) {
+                showCol(elem.value, true);
+            } else {
+                showCol(elem.value, false);
+            }
+        }
+
+        function showCol(colHeader, showCol) { //juntar com a de cima
+            try {
+                hPos = 1;
+                $('#tablePesqAlunos th').each(function () {
+                    if (colHeader == $(this).html()) {
+                        //alert(hPos);
+                        if (showCol == true) {
+                            $('#tablePesqAlunos th:nth-child(' + (hPos) + ')').show();
+                            $('#tablePesqAlunos td:nth-child(' + (hPos) + ')').show();
+                        } else {
+                            $('#tablePesqAlunos th:nth-child(' + (hPos) + ')').hide();
+                            $('#tablePesqAlunos td:nth-child(' + (hPos) + ')').hide();
+                        }
+                    }
+                    hPos++;
+                });
+            } catch (error) {
+                alert(error);
+            }
+        }
+
+        function pesqAlunosTodos(elem) {
+            options = {};
+            options["todos"] = true;
+            btPressed = elem;
+            btPressed.disabled = true;
+            thisPesquisaAlunos(options, tableAluHeaders);
+        }
+
+        function pesqAlunosPorMatricula(elem) {
+            //alert(elem)
+            options = {};
+            if (pesqAlunoInputMatricula.value != '') {
+                btPressed = "" + elem;
+                btPressed.disabled = true;
+                options["matrícula"] = pesqAlunoInputMatricula.value;
+                //options["matrícula"] = parseInt(pesqAlunoInputMatricula.value);
+                thisPesquisaAlunos(options, tableAluHeaders);
+            } else {
+                qToast('e', 'Digite uma MATRÍCULA para pesquisar.');
+            }
+        }
+
+        function pesqAlunosPorCPFResp(elem) {
+            options = {};
+            if (pesqAlunoInputCPFResp.value != '') {
+                btPressed = elem;
+                btPressed.disabled = true;
+                options["cpf-resp"] = pesqAlunoInputCPFResp.value;
+                thisPesquisaAlunos(options, tableAluHeaders);
+            } else {
+                qToast('e', 'Digite um CPF para pesquisar.');
+            }
+        }
+
+        function pesqAlunosPorNome(elem) {
+            options = {};
+            if (pesqAlunoInputNome.value != '') {
+                options["nome"] = pesqAlunoInputNome.value;
+                btPressed = elem;
+                btPressed.disabled = true;
+                thisPesquisaAlunos(options, tableAluHeaders);
+            } else {
+                qToast('e', 'Digite um NOME para pesquisar.');
+            }
+        }
+
+        function pesqAlunosPorNomeMae(elem) {
+            options = {};
+            if (pesqAlunoInputNomeMae.value != '') {
+                options["nome-mãe"] = pesqAlunoInputNomeMae.value;
+                btPressed = elem;
+                btPressed.disabled = true;
+                thisPesquisaAlunos(options, tableAluHeaders);
+            } else {
+                qToast('e', 'Digite o NOME da mãe para pesquisar.');
+            }
+        }
+
+        function buildTable(arr) {
+            let table = "<table>";
+            table += "<tr>";
+            for (index = 0; index < tableAluHeaders.length; index++) {
+                table += "<th onclick='sortTable2(" + index + ");'>" + tableAluHeaders[index] + "</th>";
+            }
+            table += "</tr>";
+            arr.forEach(function (aln) {
+                table += "<tr>";
+                for (i = 0; i < tableAluHeaders.length; i++) {
+                    let ivalue = aln.Dados[tableAluHeaders[i].toLowerCase().replace(" ", "-")];
+                    /* if ("" + ivalue === "true" || "" + ivalue === "false" || "" +
+                        ivalue === "sim" || "" + ivalue === "nao" || "" + ivalue === "não") {
+                        console.log(tableAluHeaders[i], ivalue + "/" + typeof ivalue);
+                    } */
+                    if ("" + ivalue === "true" || "" + ivalue === "false") {
+                        if (ivalue === "true")
+                            table += "<td>Sim</td>";
+                        else
+                            table += "<td>Não</td>";
+                    } else { //algo que pode ser melhoradd aqui
+                        var ddata = replaceAll(tableAluHeaders[i].toLowerCase(), ' ', '-');
+                        var tmp = '' + (aln.Dados[ddata]);
+                        table += "<td>" + tmp + "</td>";
+                        //table += "<td>" + replaceAll(tmp, '_', ' ') + "</td>";
+                    }
+                }
+                table += "</tr>";
+            })
+            table += "</table>";
+            return table;
+        }
+
+        function thisPesquisaAlunos(options, tableAluHeaders) { //Pesquisa atual
+            timeToLoadP(true, 'pesquisaAlunos');
+            STMA.bdUpdateAll().then(() => {
+                selectedItems = [];
+                if (options.matrícula != null) {
+                    sQuery.queryData(STMA.arrs.arrAlunos, ["Dados"], "matrícula=" + options[
+                        "matrícula"]).forEach(a => {
+                        selectedItems.push(a);
+                    });
+                }
+                if (options['cpf-resp'] != null) {
+                    sQuery.queryData(STMA.arrs.arrAlunos, ["Dados"], "cpf-resp=" + options[
+                        "cpf-resp"]).forEach(a => {
+                        selectedItems.push(a);
+                    });
+                }
+                if (options.nome != null) {
+                    sQuery.queryData(STMA.arrs.arrAlunos, ["Dados"], "nome-completo=" + options.nome).forEach(a => {
+                        selectedItems.push(a);
+                    });
+                }
+                if (options['nome-mãe'] != null) {
+                    sQuery.queryData(STMA.arrs.arrAlunos, ["Dados"], "nome-mãe=" + options[
+                        "nome-mãe"]).forEach(a => {
+                        selectedItems.push(a);
+                    });
+                }
+                if (options.todos != null) {//ver
+                    sQuery.queryData(STMA.arrs.arrAlunos, ["Dados"], "idade>=0").forEach(a => {
+                        selectedItems.push(a);
+                    });
+                }
+                //console.log(selectedItems);
+                let table = buildTable(selectedItems);
+
+                document.getElementById("tablePesqAlunos").innerHTML = table;
+                configTable();
+                qToast('s', 'Pesquisa finalizada.');
+                sndSuccess.play();
+                timeToLoadP(false, 'pesquisaAlunos');
+            });
+            return; //-------------------------------------------------------------------------------------------
+        } //thisPesquisaAlunos
+
+        function configTable() {
+            timeToLoadP(true, 'pesquisaAlunos');
+            $('#checkbox-gridAlunos input:checkbox').each(function () { //toggle cols
+                toggleColAluno(this);
+            });
+            document.getElementById("tablePesqAlunos").className = " w3-table-all";
+
+            $("#tablePesqAlunos tr").css({
+                "cursor": "pointer"
+            });
+            $("#tablePesqAlunos tr:gt(0)").click(function () {
+                $("#tablePesqAlunos tr:gt(0)").removeClass('tableRowSelected');
+                $(this).addClass('tableRowSelected');
+                let value = $(this).find('td:nth-child(1)').html(); //1 para nome
+                //alert(value);
+                load_verAluno(value);
+            });
+            btPressed.disabled = false;
+            $('#tablePesqAlunos th:nth-child(1)').hide(); //hide nsigeb
+            $('#tablePesqAlunos td:nth-child(1)').hide();
+            timeToLoadP(false, 'pesquisaAlunos');
+        }
+
+        function sortTable2(n) {
+            //console.time("Sorting: " + tableAluHeaders[n]);
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("tablePesqAlunos");
+            if (sortingDir == "") {
+                sortingDir = "-"
+            } else {
+                sortingDir = ""
+            }
+            console.log(tableAluHeaders[n]);
+            selectedItems.sort(dynamicSort("Dados", sortingDir + tableAluHeaders[n].toLowerCase().replace(" ", "-")));
+            table.innerHTML = buildTable(selectedItems);
+            /* if (appliedFilter > 0) {
+                tableFilter(appliedFilter);
+            } */
+            configTable();
+            //console.timeEnd("Sorting: " + tableAluHeaders[n]);
+        }
+        var appliedFilter = -1;
+
+        function tableFilter(col) { //fazer mult, fazer no array:buildTable
+            // Declare variables
+            appliedFilter = col;
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("tableAluFilter" + col);
+            filter = input.value.toUpperCase();
+            table = document.getElementById("tablePesqAlunos");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[col];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    //console.log(txtValue);
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function pesqAlunoOnEnterKey(e) {
+            if (e.keyCode == 13) {
+                elem = document.getElementById(e.target.id)
+                switch (elem.id) {
+                    case 'pesqAlunoInputMatricula':
+                        pesqAlunosPorMatricula(elem);
+                        break;
+                    case 'pesqAlunoInputCPFResp':
+                        pesqAlunosPorCPFResp(elem);
+                        break;
+                    case 'pesqAlunoInputNome':
+                        pesqAlunosPorNome(elem);
+                        break;
+                    case 'pesqAlunoInputNomeMae':
+                        pesqAlunosPorNomeMae(elem);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        function pesquisaAlunosFocus(starting = false) {
+            //console.log("pesquisaAlunosFocus");
+            if (!starting) {
+                $('html, body').animate({
+                    scrollTop: $(".tableRowSelected").offset().top
+                }, 500);
+            }
+            //console.log("pesquisaAlunosFocus");
+            document.getElementById("nomesComp").innerHTML = "";
+            document.getElementById("nomesMaeComp").innerHTML = "";
+            document.getElementById("alu_ac_mat").innerHTML = "";
+
+            for (var key in STMA.BDL.Alunos) {
+                //console.log(key);
+                let optMat = document.createElement("option");
+                optMat.value = prepToShow("" + STMA.BDL.Alunos[key].Dados["matrícula"]);
+                optMat.innerHTML = prepToShow("" + STMA.BDL.Alunos[key].Dados["matrícula"]);
+                acMat.appendChild(optMat);
+                let optNome = document.createElement("option");
+                optNome.value = prepToShow(STMA.BDL.Alunos[key].Dados["nome-completo"]);
+                optNome.innerHTML = prepToShow(STMA.BDL.Alunos[key].Dados["nome-completo"]);
+                acNome.appendChild(optNome);
+                let optNomeM = document.createElement("option");
+                optNomeM.value = prepToShow(STMA.BDL.Alunos[key].Dados["nome-mãe"]);
+                optNomeM.innerHTML = prepToShow(STMA.BDL.Alunos[key].Dados["nome-mãe"]);
+                acNomeM.appendChild(optNomeM);
+            }
+        }
+    </script>
+</body>

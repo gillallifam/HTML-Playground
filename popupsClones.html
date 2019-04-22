@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <style>
+        #select1,
+        #select2,
+        #select3,
+        #select4 {
+            /* width: 10%; */
+            margin-left: 10px;
+            /* padding: 12px; */
+            border: 1px solid #87CEEB;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        @media (max-width: 550px) {
+            .selectTitle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="javascript: void(0)" onclick="popup('qTest2.html')">Centered popup window</a>
+    <select id="direction" title="Please choose a direction">
+        <option value="le">Left</option>
+        <option selected value="st">Striat</option>
+        <option value="ri">Right</option>
+    </select>
+    <div id="mainDiv" style="display:flex;">
+        <div id="original" style="width: 10%;">
+            <label for="select1" class="selectTitle" title="Please choose a direction">Cloneme:</label>
+            <select id="select1">
+                <option>one</option>
+                <option>two</option>
+                <option>three</option>
+            </select>
+        </div>
+
+    </div>
+
+    <script>
+        var div_m = document.getElementById("mainDiv");
+        var original = document.getElementById("original");
+
+        div_m.appendChild(cloneCustom(original));
+        div_m.appendChild(cloneCustom(original));
+        div_m.appendChild(cloneCustom(original));
+        div_m.appendChild(cloneCustom(original));
+        div_m.appendChild(cloneCustom(original));
+
+        function cloneCustom(orig) {
+            let d_clone = orig.cloneNode(true);
+            d_clone.id = "fclonado";
+            d_clone.style.width = "10%";
+            d_clone.childNodes[1].innerHTML = "Clonado"
+            d_clone.childNodes[1].title = "Novo"
+            return d_clone;
+        }
+        //console.log(Date.now());
+        //console.log(Date(Date.now()));
+        //console.log("x", ((1 << 24) + (150 << 16) + (150 << 8) + 120).toString(16).substr(1));
+
+        function popup(url) {
+            var width = 800;
+            var height = 600;
+            var left = (screen.width - width) / 2;
+            var top = (screen.height - height) / 2;
+            var params = 'width=' + width + ', height=' + height;
+            params += ', top=' + top + ', left=' + left;
+            params += ', directories=no';
+            params += ', location=no';
+            params += ', menubar=no';
+            params += ', resizable=no';
+            params += ', scrollbars=no';
+            params += ', status=no';
+            params += ', toolbar=no';
+            newwin = window.open(url, 'windowname5', params);
+            if (window.focus) {
+                newwin.focus()
+            }
+            return false;
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .users {
+      table-layout: fixed;
+      width: 100%;
+      white-space: nowrap;  
+    }
+
+    .tablewrapper {
+      height: 50px;
+      overflow-y: hidden;
+      background-color: blue;
+    }
+
+    .users th td {
+      height: 10px;
+    }
+
+    .users tr td {
+      height: 10px;
+    }
+
+    .users th {
+      background-color: green;
+    }
+
+    .users td {
+      background-color: aqua;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Column widths are based on these cells */
+    .row-ID {
+      width: 10%;
+    }
+
+    .row-name {
+      width: 40%;
+    }
+
+    .row-job {
+      width: 30%;
+    }
+
+    .row-email {
+      width: 20%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="tablewrapper">
+    <table class="users">
+      <thead>
+        <tr>
+          <th class="row-1 row-ID">ID</th>
+          <th class="row-2 row-name">Name</th>
+          <th class="row-3 row-job">Job</th>
+          <th class="row-4 row-email">Email
+          <th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0001</td>
+          <td>Johnny Five</td>
+          <td>Robotin'</td>
+          <td>need@input.com</td>
+        </tr>
+        <tr>
+          <td>0002</td>
+          <td>Super Superlonglastnamesmith</td>
+          <td>Doin' stuff</td>
+          <td>doing@stuff.com</td>
+        </tr>
+        <tr>
+          <td>0002</td>
+          <td>Super Superlonglastnamesmith</td>
+          <td>Doin' stuff</td>
+          <td>doing@stuff.com</td>
+        </tr>
+        <tr>
+          <td>0002</td>
+          <td>Super Superlonglastnamesmith</td>
+          <td>Doin' stuff</td>
+          <td>doing@stuff.com</td>
+        </tr>
+        <tr>
+          <td>0002</td>
+          <td>Super Superlonglastnamesmith</td>
+          <td>Doin' stuff</td>
+          <td>doing@stuff.com</td>
+        </tr>
+        <tr>
+          <td>0002</td>
+          <td>Super Superlonglastnamesmith</td>
+          <td>Doin' stuff</td>
+          <td>doing@stuff.com</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+
+</html>

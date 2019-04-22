@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="2n.css" />
+  <style>
+    
+  </style>
+</head>
+
+<body>
+  <input type="text" name="n" id="n" placeholder="n" value="10" />
+  <button onclick="calc();">calc</button>
+  <br />
+  <input type="text" name="ns" id="numbers" placeholder="numbers" />
+  <br />
+  <textarea name="comb" id="combinations" cols="30" rows="10"></textarea>
+  <!-- <input type="text" name="d" id="d" placeholder="d" value="1" /> -->
+
+  <br />
+  <input type="text" name="dr" id="dr" placeholder="result" />
+  <button onclick="decompose();">decompose</button>
+  <div id="content"></div>
+  <script>
+
+    var n = document.getElementById("n");
+    var d = document.getElementById("d");
+    var dr = document.getElementById("dr");
+    var ns = document.getElementById("numbers");
+    var cs = document.getElementById("combinations");
+    var arrbases;
+    var arrcombs = [];
+
+    function getSel() {
+      let txtarea = document.getElementById("combinations");
+      let start = txtarea.selectionStart;
+      let finish = txtarea.selectionEnd;
+      let sel = txtarea.value.substring(start, finish);
+      return sel
+    }
+
+    function decompose() {
+      dr.value = "";
+      //let dv = parseInt(d.value);
+      let dv = parseInt(getSel());
+      if (arrcombs.includes(dv)) {
+        let maxLoops = 0;
+        let npos = 0;
+        while (dv > 0) {
+          maxLoops++;
+          if (maxLoops > 100) {
+            console.log("maybe infinite");
+            break;
+          }
+          npos++;
+          let bn = Math.pow(2, npos);
+          if (dv < bn) {
+            bn = Math.pow(2, npos - 1);
+            dr.value += bn + " ";
+            dv = dv - bn;
+            npos = 0;
+          }
+        }
+      } else {
+        dr.value = "error";
+      }
+    }
+
+    function calc() {
+      arrcombs = [];
+      let nv = parseInt(n.value) - 1;
+      ns.value = 1 + " ";
+      cs.value = "";
+      for (let p = 1; p <= nv; p++) {
+        ns.value += Math.pow(2, p) + " ";
+      }
+      arrbases = ns.value.split(" ");
+      for (let i = 0; i < arrbases.length - 1; i++) {
+        cs.value += arrbases[i] + " ";
+        arrcombs.push(parseInt(arrbases[i]));
+        for (let x = i + 1; x < arrbases.length - 1; x++) {
+          cs.value += parseInt(arrbases[i]) + parseInt(arrbases[x]) + " ";
+          arrcombs.push(parseInt(arrbases[i]) + parseInt(arrbases[x]));
+        }
+        cs.value += "\n";
+      }
+      console.log(...arrcombs.sort((a, b) => a - b));
+      console.log(hasDuplicates(arrcombs));
+    }
+
+    function hasDuplicates(arr) {
+      return arr.every(function (val) {
+        return arr.indexOf(val) !== arr.lastIndexOf(val);
+      });
+    }
+  </script>
+</body>
+
+</html>

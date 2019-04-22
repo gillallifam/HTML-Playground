@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <button onclick="timeThis('aaa');">query</button>
+
+    <script>
+      let older = {};
+      function timeThis(id) {
+        if (older[id]) {
+          console.log(
+            id + " end in:",
+            performance.now() - older[id] + " milliseconds."
+          );
+          older[id] = undefined;
+        } else {
+          console.log("Timing", id);
+          older[id] = performance.now();
+        }
+      }
+    </script>
+  </body>
+</html>

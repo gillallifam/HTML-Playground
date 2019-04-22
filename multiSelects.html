@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+    <select name="slc1" id="slc1" onchange="_1sel();"></select>
+    <select name="slc2" id="slc2" onchange="_2sel();"></select>
+    <select name="slc3" id="slc3" onchange="_3sel();"></select>
+    <select name="slc4" id="slc4"></select>
+    <script>
+        var slc1 = document.getElementById("slc1");
+        var slc2 = document.getElementById("slc2");
+        var slc3 = document.getElementById("slc3");
+        var slc4 = document.getElementById("slc4");
+
+        var zeroObj = {}
+
+        function pumpO(obj, name, a2, a3, values) {
+            obj[name] = {};
+            for (let b = 0; b < a2.length; b++) {
+                obj[name][a2[b]] = {}
+                for (let c = 0; c < a3.length; c++) {
+                    for (let d = 0; d < values.length; d++) {
+                        obj[name][a2[b]][a3[c]] = values[d]
+                    }
+                }
+            }
+            return obj;
+        }
+        pumpO(zeroObj, "AAA", ["AA", "BB", "CC"], ["c", "b", "a"], ["x", "y", "z"])
+        console.log(zeroObj);
+
+        var dataObj = {
+            "brazil": {
+                "sp": {
+                    "sp1": ["sp1A", "sp1B"],
+                    "sp2": ["sp2A"]
+                },
+                "mg": {
+                    "mg1": ["mg1A", "mg1B"],
+                    "mg2": ["mg2A", "mg1B"]
+                },
+                "rj": {
+                    "rj1": ["rj1A", "rj1B", "rj1C"],
+                    "rj2": ["rj2A", "rj1B"]
+                }
+            },
+            "usa": {
+                "ny": {
+                    "ny1": ["ny1A"],
+                    "ny2": ["ny2A"]
+                },
+                "tx": {
+                    "tx1": ["tx1A"]
+                }
+            },
+            "england": {
+                "ld": {
+                    "ld1": ["ld1A"],
+                    "ld2": ["ld2A"]
+                },
+                "uk": {
+                    "uk1": ["uk1A", "uk1B"]
+                }
+            }
+        }
+
+        let ctrs = Object.keys(dataObj);
+        cmo(ctrs, slc1);
+        _1sel();
+        //slc1.value = "usa"
+        //slc1.dispatchEvent(new Event('change'));
+
+        function _1sel() {
+            slc2.innerHTML = "";
+            let cities = Object.keys(dataObj[slc1.value]);
+            cmo(cities, slc2);
+            _2sel();
+        }
+
+        function _2sel() {
+            slc3.innerHTML = "";
+            let zones = Object.keys(dataObj[slc1.value][slc2.value]);
+            cmo(zones, slc3);
+            _3sel();
+        }
+
+        function _3sel() {
+            slc4.innerHTML = "";
+            let staffs = dataObj[slc1.value][slc2.value][slc3.value];
+            cmo(staffs, slc4);
+        }
+
+        function cmo(arr, s) {//create mult opt
+            arr.forEach(o => {
+                let opt = document.createElement("option");
+                opt.value = o;
+                opt.innerHTML = o;
+                s.add(opt);
+            });
+        }
+
+        /* var countryAndStates = { //keys fill 1º select, values fill 2º select
+            brasil: ["sp", "rj", "mg"],
+            usa: ["ny", "az", "tx"],
+            england: ["pp", "cs", "rt"],
+            japan: ["tk", "ng", "hr"],
+        }
+        var statesAndCities = { //values fill 3º select
+            sp: ["sp1", "sp2", "sp3"],
+            rj: ["rj1", "rj2", "rj3"],
+            mg: ["mg1", "mg2", "mg3"],
+            ny: ["ny1", "ny2", "ny3"],
+            az: ["az1", "az2", "az3"],
+            tx: ["tx1", "tx2", "tx3"],
+            pp: ["pp1", "pp2", "pp3"],
+            cs: ["cs1", "cs2", "cs3"],
+            rt: ["rt1", "rt2", "rt3"],
+            tk: ["tk1", "tk2", "tk3"],
+            ng: ["ng1", "ng2", "ng3"],
+            hr: ["hr1", "hr2", "hr3"],
+        }
+
+        var operators = {
+            sp1: ["staff1", "staff2", "staff3"],
+            sp2: ["staff1", "staff2"],
+            sp2: ["staff1", "staff2"],
+            rj1: ["staff1", "staff2"],
+            rj2: ["staff1", "staff2"],
+            rj3: ["staff1", "staff2"],
+            mg1: ["staff1", "staff2"],
+            mg2: ["staff1", "staff2"],
+            mg3: ["staff1", "staff2"],
+            ny1: ["staff1", "staff2", "staff3"],
+            ny2: ["staff1", "staff2"],
+            ny2: ["staff1", "staff2"],
+            az1: ["staff1", "staff2"],
+            az2: ["staff1", "staff2"],
+            az3: ["staff1", "staff2"],
+            tx1: ["staff1", "staff2"],
+            tx2: ["staff1", "staff2"],
+            tx3: ["staff1", "staff2"],
+            pp1: ["staff1", "staff2", "staff3"],
+            pp2: ["staff1", "staff2"],
+            pp3: ["staff1", "staff2"],
+            cs1: ["staff1", "staff2"],
+            cs2: ["staff1", "staff2"],
+            cs3: ["staff1", "staff2"],
+            rt1: ["staff1", "staff2"],
+            rt2: ["staff1", "staff2"],
+            rt3: ["staff1", "staff2"],
+            tk1: ["staff1", "staff2", "staff3"],
+            tk2: ["staff1", "staff2"],
+            tk3: ["staff1", "staff2"],
+            ng1: ["staff1", "staff2"],
+            ng2: ["staff1", "staff2"],
+            ng3: ["staff1", "staff2"],
+            hr1: ["staff1", "staff2"],
+            hr2: ["staff1", "staff2"],
+            hr3: ["staff1", "staff2"],
+        }
+
+        Object.keys(countryAndStates).forEach(o => {
+            slc1.appendChild(cOpt(o))
+        });
+        oneSelected();
+
+        function oneSelected() {
+            slc2.innerHTML = "";
+            countryAndStates[slc1.value].forEach(o => {
+                slc2.appendChild(cOpt(o))
+            });
+            twoSelected();
+        }
+
+        function twoSelected() {
+            slc3.innerHTML = "";
+            statesAndCities[slc2.value].forEach(o => {
+                slc3.appendChild(cOpt(o))
+            });
+            threeSelected();
+        }
+
+        function threeSelected() {
+            slc4.innerHTML = "";
+            operators[slc3.value].forEach(o => {
+                slc4.appendChild(cOpt(o))
+            });
+        }
+
+        function cOpt(o) {
+            let opt = document.createElement("option");
+            opt.value = o;
+            opt.innerHTML = o;
+            return opt;
+        } */
+
+        //var opt=document.createElement("option");
+
+        /* let validator = {
+            set: function (obj, prop, value) {
+                if (prop === 'age') {
+                    if (!Number.isInteger(value)) {
+                        throw new TypeError('The age is not an integer');
+                    }
+                    if (value > 200) {
+                        alert('The age seems invalid');
+                        return false;
+                        throw new RangeError('The age seems invalid');
+                    }
+                }
+                //O comportamento padrão para armazenar o valor
+                obj[prop] = value;
+                // Indique o sucesso
+                return true;
+            }
+        };
+        let person = new Proxy({}, validator);
+        person.age = 201;
+        console.log(person.age); // 100
+        try {
+            //person.age = 'young'; // Lança uma exceção
+            //person.age = 300; // Lança uma exceção 
+        } catch (error) {
+            alert(error)
+        }
+
+        var infArray = [];
+        console.log(infArray.length);
+        //infArray.length = 10;
+        //console.log(infArray.length);
+        infArray[5] = "v";
+        console.log(infArray);
+
+        infArray[80] = "xv";
+
+        console.log(infArray[5]);
+        console.log(infArray[80]);
+        console.log(infArray); */
+    </script>
+
+</body>
+
+</html>

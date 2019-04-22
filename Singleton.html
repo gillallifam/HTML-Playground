@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+
+  <body>
+    <script>
+      class Item {
+        constructor(id, nome) {
+          this.id = id;
+          this.nome = nome;
+        }
+      }
+      class Singleton {
+        constructor() {
+          if (!Singleton.instance) {
+            this.id = "Single";
+            this.data = [];
+            Singleton.instance = this;
+          }
+          return Singleton.instance;
+        }
+
+        add(item) {
+          this.data.push(item);
+        }
+
+        get(id) {
+          return this.data.find(d => d.id === id);
+        }
+        findItem(nome) {
+          return this.data.find(d => d.nome.includes(nome));
+        }
+      }
+
+      const instance = new Singleton();
+      Object.freeze(instance);
+      var numItems = 1000;
+      for (let i = 1; i <= numItems; i++) {
+        item = new Item(i, makeid());
+        instance.add(item);
+      }
+      console.log(instance.findItem("f1"));
+      console.log(instance);
+
+      function makeid() {
+        let text = "";
+        let possible =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (let i = 0; i < 16; i++)
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+        return text;
+      }
+    </script>
+  </body>
+</html>
